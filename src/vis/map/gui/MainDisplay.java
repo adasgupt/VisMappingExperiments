@@ -9,18 +9,15 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+
+
 import vis.map.datamodel.DataSet;
+import vis.map.metrics.AxisPairMetrics;
 
 
 
@@ -40,117 +37,7 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 	FileWriter entropyOutput = null;
 	BufferedWriter bw = null;
 	
-	protected static class AxisPairMetrics implements Comparable, Cloneable{
-
-		private int axis1;
-		private int axis2;
-		private float jointEntropy;
-		private float grayEntropy;
-		private float colorEntropy;
-		private float distanceEntropy;
-		private float weightedGrayEntropy;
-		private float weightedColorEntropy;
-		private float klDiv;
-
-		private BufferedImage img;
-
-		public AxisPairMetrics(int dim1, int dim2){
-			axis1 = dim1;
-			axis2 = dim2;
-
-		}
-		public void setAxes(int dim1, int dim2){
-			axis1 = dim1;
-			axis2 = dim2;
-
-		}
-		public int getDimension1(){
-			return axis1;
-		}
-		public int getDimension2(){
-			return axis2;
-		}
-		public void setJointEntropy(float je){
-			jointEntropy = je;
-
-		}
-		public void setGrayEntropy(float pe){
-			grayEntropy = pe;
-
-		}
-		public void setColorEntropy(float pe){
-			colorEntropy = pe;
-
-		}
-		public void setDistanceEntropy(float de){
-			distanceEntropy =de;
-
-		}
-		public void setWeightedGrayEntropy(float de){
-			weightedGrayEntropy =de;
-
-		}
-		public void setWeightedColorEntropy(float de){
-			weightedColorEntropy =de;
-
-		}
-		public float getJointEntropy(){
-			return jointEntropy;
-		}
-
-		public float getGrayEntropy(){
-			//System.err.println(" Gray entropy   " +grayEntropy);
-			return grayEntropy;
-		}
-		public float getColorEntropy(){
-			return colorEntropy;
-		}
-
-
-		public float getDistanceEntropy(){
-			return distanceEntropy;
-		}
-
-		public float getWeightedGrayEntropy(){
-			return weightedGrayEntropy;
-		}
-
-		public float getWeightedColorEntropy(){
-			return weightedColorEntropy;
-		}
-
-
-
-		public void setKLDivergence(float kld){
-			klDiv = kld;
-		}
-
-		public float getKLDivergence(){
-			return klDiv;
-		}
-
-
-		public void storeImage(BufferedImage bufferImg){
-
-			img = bufferImg;
-		}
-		public BufferedImage getImage(){
-
-			return img;
-
-		}
-
-
-		@Override
-		public int compareTo(Object arg0) {
-			// TODO Auto-generated method stub.
-			return 0;
-		}
-
-	}
-
-
-	private ArrayList<AxisPairMetrics> metricsList = new ArrayList<AxisPairMetrics>();
+    private ArrayList<AxisPairMetrics> metricsList = new ArrayList<AxisPairMetrics>();
 
 	private ArrayList<BufferedImage> imageList = new ArrayList<BufferedImage>();
 
@@ -177,6 +64,27 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 	 */
 	private int dimension1;
 	private int dimension2;
+	
+	public Axis axes[];
+
+	/** Helper class for string the properties of an axis. */
+	public class Axis {
+		int dimension;
+
+		float scale;
+
+		float offset;
+
+		String label;
+
+		Axis(int dimension, float scale, float offset, String label) {
+			
+			this.dimension = dimension;
+			this.scale     = scale;
+			this.offset    = offset;
+			this.label     = label;
+		}
+	}
 	/*
 	 * parameters for scaling
 	 */
@@ -223,10 +131,47 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 		System.err.println("Repaint");
 		repaint();
 
+		
+		if (this.data != null) {
+			//this.data.removeChangeListener(this);
+
+			axes = null;
+
+		//	brushValues = null;
+		}
+
+		this.data = data;
+
+		if (data != null) {
+	//		data.addChangeListener(this);
+
+			axes = new Axis[data.getNumDimensions()];
+			String axisNames[] = new String[data.getNumDimensions()];
+	//		brushValues = new float[data.getNumRecords()];
+
+			for (int i = 0; i < data.getNumDimensions(); i++) {
+				// initialize scaling of axis to show maximum detail
+				Axis newAxis = new Axis(i, data.getMinValue(i) - data.getMaxValue(i), data.getMaxValue(i), data.getAxisLabel(i));
+				axes[i] = newAxis;
+				axisNames[i] = newAxis.label;
+			}
+
+		
+
+		}
+
+		//	matrixView.updateCurrentAxes(axes);
+//		currentBrush = null;
+
+//		deepRepaint = true;
+
+		repaint();
 
 		//computeEntropy(imgArray[0]);
 
 	}
+	
+	
 
 
 	public void paint(Graphics g){
@@ -244,7 +189,7 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 		if(data!=null){
 
 			System.err.println("Painting inside");
-			drawScatterplot(g2, data, 0, 1);
+			drawScatterplot(g2, data, 2, 3);
 
 			//processMetrics();
 
@@ -410,7 +355,24 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 		return metricsList;
 	}
 
-
+	public int getNumAxes() {
+		if (axes != null)
+			return axes.length;
+		else
+			return 0;
+	}
+	
+	public String getAxisLabel(int num) {
+		if (data != null) {
+			String label = axes[num].label;
+			if (label != null)
+				return label;
+			else
+				return ("X" + axes[num].dimension);
+		} else {
+			return null;
+		}
+	}
 
 
 

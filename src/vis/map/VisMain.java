@@ -1,43 +1,67 @@
 package vis.map;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.io.IOException;
 
 import javax.swing.JFrame;
 
-import vis.map.datamodel.DataReader;
-import vis.map.datamodel.DataSet;
+import vis.map.datamodel.STFFile;
 import vis.map.gui.MainDisplay;
+import vis.map.gui.MappingSelectionPanel;
 
 public class VisMain {
 	
 	public static void main(String args[]){
 		
-		
-		DataReader reader = new DataReader();
+//read Data
+		STFFile file = new STFFile("src/data/cars.stf");
 		try {
-			reader.readData();
-		} catch (IOException exception) {
-			// TODO Auto-generated catch-block stub.
-			exception.printStackTrace();
+			file.readContents();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-		DataSet data = reader.getData();
 		
-		for(int i=0; i<data.getNumDimensions(); i++)
-		{
-			
-			
-			System.err.println("Label " +data.getAxisLabel(i));
-		}
+		//set up displays
 		
-		JFrame mainframe = new JFrame("Mapping Panel");
+		JFrame mainFrame = new JFrame("Mapping Panel");
 		MainDisplay display = new MainDisplay();
-		mainframe.add(display);
-		display.initialize(data);
+		display.initialize(file);
+		mainFrame.setLayout(new BorderLayout());
+		mainFrame.add(display, BorderLayout.CENTER);
+		
+		MappingSelectionPanel mappingPanel = new MappingSelectionPanel();
+		mappingPanel.setPreferredSize(new Dimension(200,800));
+		mappingPanel.setParameters(file, display);
+		mappingPanel.createPanel();
+		mainFrame.add(mappingPanel, BorderLayout.WEST);
+
+
+		
+//		DataReaderTODO reader = new DataReaderTODO();
+//		try {
+//			reader.readData();
+//		} catch (IOException exception) {
+//			// TODO Auto-generated catch-block stub.
+//			exception.printStackTrace();
+//		}
+//		
+//		DataSet data = reader.getData();
+//		
+//		for(int i=0; i<data.getNumDimensions(); i++)
+//		{
+//			
+//			
+//			System.err.println("Label " +data.getAxisLabel(i));
+//		}
+		
+		
+		
 	
-		mainframe.setSize(new Dimension(600,600));
-		mainframe.setVisible(true);
+		mainFrame.setSize(new Dimension(800,800));
+		mainFrame.setVisible(true);
 		
 		
 	}
