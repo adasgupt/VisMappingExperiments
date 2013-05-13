@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JPanel;
 
@@ -24,7 +25,7 @@ import vis.map.metrics.AxisPairMetrics;
 public class MainDisplay extends JPanel implements MouseListener, MouseMotionListener {
 
 
-
+     HashMap<Integer, String> visMap = new HashMap<Integer,String>();
 	/*
 	 *  Parameters that control the computation of metrics-width, height of screen
 	 */
@@ -372,6 +373,15 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 		} else {
 			return null;
 		}
+	}
+
+
+	public void setMapping(int dataDimension, String visualvariableName) {
+		
+		visMap.put(dataDimension, visualvariableName);
+		
+    
+		
 	}
 
 
