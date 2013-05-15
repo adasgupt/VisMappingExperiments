@@ -16,7 +16,7 @@ public class VisMain {
 	public static void main(String args[]){
 		
 //read Data
-		STFFile file = new STFFile("src/data/cars.stf");
+		STFFile file = new STFFile("src/data/cloud.stf");
 		try {
 			file.readContents();
 		} catch (IOException e) {

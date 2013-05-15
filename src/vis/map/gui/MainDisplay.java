@@ -56,7 +56,7 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 
 	public static final float RECORD_COLOR_MID[] = {0.874509804f, 0.760784314f, 0.490196078f, .1f};
 
-	public static final float RECORD_COLOR_LOW[] = {49/255f, 130/255f, 189/255f, .9f};
+	public static final float RECORD_COLOR_LOW[] = {0, 0/255f, 1f, .6f};
 
 	//a hack to stop calling the paint code repeatedly
 	int callCount= 0;
@@ -223,13 +223,15 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 	 */
 	
 
-	protected Color getRecordColor(float point1, float point2, int numBins){
+	protected Color getRecordColor(int point1, int numBins){
 
 		float norm = (float)((point1/(float)numBins));
 		float mult[] = {RECORD_COLOR_HIGH[0] * norm + RECORD_COLOR_LOW[0]*(1-norm), RECORD_COLOR_HIGH[1] * norm + RECORD_COLOR_LOW[1]*(1-norm), 
-				RECORD_COLOR_HIGH[2] * norm + RECORD_COLOR_LOW[2]*(1-norm), 0.2f};
+				RECORD_COLOR_HIGH[2] * norm + RECORD_COLOR_LOW[2]*(1-norm), 0.6f};
 
-		Color color = new Color(mult[0], mult[1], mult[2]);
+		Color color = new Color(mult[0], mult[1], mult[2], mult[3]);
+		
+	//	Color newColor = new Color(RECORD_COLOR_LOW[0], RECORD_COLOR_LOW[1], norm*RECORD_COLOR_LOW[2], RECORD_COLOR_LOW[3]);
 
 		return color;
 
@@ -293,7 +295,7 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 			int v1 = (int)((dataRow[axis1] - axisOffset1) * (param.x-PADDING) / scale1);
 			int v2 = (int)((dataRow[axis2] - axisOffset2) * (param.y-PADDING) / scale2);
 			int v3 = (int)((dataRow[axis3] - axisOffset3)*(param.y-PADDING) / scale3);
-		//	int v4 = (int)((dataRow[axis4] - axisOffset4) * (param.y) / scale2);
+	     	int v4 = (int)((dataRow[axis4] - axisOffset4) * (param.y-PADDING) / scale4);
 			//			if(useColor)
 			//				ig.setColor(getRecordColor(v1,v2, (int)param.y));
 			//			else
@@ -302,6 +304,13 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 			//ig.drawLine((int)(v1), (int)(param.y-v2), (int)(v1)+2,(int)(param.y-v2)+2);	
 			if(axis3!=-1)
 			 radius = (int)getScaledRadius(v3);
+			
+			if(axis4!=-1)
+			{
+				System.err.println("setting color");
+				ig.setColor(getRecordColor(v4, (int)param.y-PADDING));
+				
+			}
 		//	System.err.println("radius " +radius);
 			
 			//ig.drawOval((int)(v1), (int)(param.y-v2), radius, radius);

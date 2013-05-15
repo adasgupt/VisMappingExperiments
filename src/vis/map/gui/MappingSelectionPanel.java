@@ -62,6 +62,7 @@ public class MappingSelectionPanel extends JPanel{
 		{
 			
 			comBoxArray[numComboBox] = Box.createHorizontalBox();
+			comBoxArray[numComboBox].setPreferredSize(new Dimension(200,30));
 			
 			visualVariable[numComboBox] = new JLabel(visualVariableName[numComboBox]);
 			visualVariable[numComboBox].setPreferredSize(new Dimension(60,20));
@@ -69,6 +70,7 @@ public class MappingSelectionPanel extends JPanel{
 			comBoxArray[numComboBox].add(visualVariable[numComboBox]);
 			
 			comboBox[numComboBox] = new JComboBox(new MyComboBoxModel(getComboBoxItems()));
+			comboBox[numComboBox].setPreferredSize(new Dimension(90, 200));
 			comboBox[numComboBox].setEditable(true);
 			comboBox[numComboBox].setEnabled(true);
 			
@@ -142,8 +144,7 @@ public class MappingSelectionPanel extends JPanel{
 			if (evt.getStateChange() == ItemEvent.SELECTED) {
 
 		  	setMapping(index, boxID);
-				//commented
-				//	parallelDisplay.setActiveRegion(brushIndex, brushIndex+1);
+				
 
 			}
 		}
