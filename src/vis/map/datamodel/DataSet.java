@@ -35,6 +35,9 @@ import java.util.Vector;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 
+import vis.map.gui.MainDisplay;
+import vis.map.metrics.AxisPair;
+
 
 
 /**
@@ -64,7 +67,7 @@ public class DataSet implements Iterable<float[]>{
 	protected int numBins=0;
 
 	protected boolean newDataSetFlag=false;
-	//AxisPair axisPairs[][];
+	AxisPair axisPairs[][];
 
 	/** List to store our event subscribers. */
 	protected EventListenerList listeners = new EventListenerList();
@@ -192,7 +195,7 @@ public class DataSet implements Iterable<float[]>{
 			valueLabels[i] = null;
 		}
 
-		//axisPairs = new AxisPair[num][num];
+		axisPairs = new AxisPair[num][num];
 		minValues = new float[num];
 		maxValues = new float[num];
 		for (int i = 0; i < num; i++) {
@@ -441,17 +444,17 @@ public class DataSet implements Iterable<float[]>{
 		return (String) recordLabels.elementAt(num);
 	}
 
-//	public AxisPair getAxisPair(int axis1, int axis2, ParallelDisplay display) 
-//	{
-////		int borderV = BasicParallelDisplayUI.getInstance().getBorderV();
-//		if (axisPairs[axis1][axis2] == null)
-//			
-//			axisPairs[axis1][axis2] = new AxisPair(this, axis1, axis2, display);
-//			
-//		//getGraph(axis1, axis2);
-//		
-//		return axisPairs[axis1][axis2];
-//	}
+	public AxisPair getAxisPair(int axis1, int axis2, MainDisplay display) 
+	{
+//		int borderV = BasicParallelDisplayUI.getInstance().getBorderV();
+		if (axisPairs[axis1][axis2] == null)
+			
+			axisPairs[axis1][axis2] = new AxisPair(this, axis1, axis2, display);
+			
+		//getGraph(axis1, axis2);
+		
+		return axisPairs[axis1][axis2];
+	}
 
 	public int[] getHistogram(int dimension, int numBins) 
 	{
@@ -469,6 +472,8 @@ public class DataSet implements Iterable<float[]>{
 		return hist;
 
 	}
+	
+   
 	
 
 	public int getMaxMinDistance(int[] edgeLengthList, boolean max) 

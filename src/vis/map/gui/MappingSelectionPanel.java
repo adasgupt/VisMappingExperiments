@@ -31,8 +31,17 @@ public class MappingSelectionPanel extends JPanel{
 	private JComboBox[] comboBox;
 	private JLabel[] visualVariable;
 	
-	String visualVariableName[]={"position", "position", "size", "color"};
+	String visualVariableName[]={"position1", "position2", "size", "color"};
 	private static final int NUMVISUALVRAIABLES = 4;
+	
+	public enum VisVariables{
+		
+		position1,
+		position2,
+		size,
+		color
+		
+		}
 	
 	public void setParameters(DataSet data, MainDisplay display){
 		
@@ -46,6 +55,7 @@ public class MappingSelectionPanel extends JPanel{
 		Box enclosingBox = Box.createVerticalBox();
 		Box[] comBoxArray = new Box[NUMVISUALVRAIABLES];
 		visualVariable = new JLabel[NUMVISUALVRAIABLES];
+		comboBox = new JComboBox[NUMVISUALVRAIABLES];
 		
 		
 		for(int numComboBox=0; numComboBox<NUMVISUALVRAIABLES; numComboBox++)
@@ -58,9 +68,11 @@ public class MappingSelectionPanel extends JPanel{
 			
 			comBoxArray[numComboBox].add(visualVariable[numComboBox]);
 			
-		
+			comboBox[numComboBox] = new JComboBox(new MyComboBoxModel(getComboBoxItems()));
+			comboBox[numComboBox].setEditable(true);
+			comboBox[numComboBox].setEnabled(true);
 			
-			setComboBoxItems(comboBox[numComboBox]);
+			
 			comboBox[numComboBox].addItemListener(new ComboBoxItemListener(numComboBox));
 			comboBox[numComboBox].setPreferredSize(new Dimension(50,30));
 			
@@ -80,7 +92,7 @@ public class MappingSelectionPanel extends JPanel{
 	}
 	
 	
-	public void setComboBoxItems(JComboBox comboBox) {
+	public ArrayList<String> getComboBoxItems() {
 
 		
 		
@@ -100,12 +112,11 @@ public class MappingSelectionPanel extends JPanel{
 			comboBoxItemsList.add(comboBoxItems[j]);
 			System.err.println("Dim  "  + display.axes[j].dimension);
 		}
+		
 		List<String> list=Arrays.asList(comboBoxItems);
 		comboBoxItemsList.addAll(list);
 		
-		comboBox = new JComboBox(new MyComboBoxModel(comboBoxItemsList));
-		comboBox.setEditable(true);
-		comboBox.setEnabled(true);
+		return comboBoxItemsList;
 	
 
 	}
@@ -130,8 +141,7 @@ public class MappingSelectionPanel extends JPanel{
 			
 			if (evt.getStateChange() == ItemEvent.SELECTED) {
 
-		  	setSelectedDataDimension(index);
-		  	setSelectedVisualVariable(boxID);
+		  	setMapping(index, boxID);
 				//commented
 				//	parallelDisplay.setActiveRegion(brushIndex, brushIndex+1);
 
@@ -147,10 +157,10 @@ public class MappingSelectionPanel extends JPanel{
 		String visualvariableName = " ";
 		switch(visualVariable){
 	
-	     case 0: visualvariableName = "position";
+	     case 0: visualvariableName = "position1";
 	    	 display.setMapping(dataDimension, visualvariableName);
 		
-	     case 1: visualvariableName = "position";
+	     case 1: visualvariableName = "position2";
     	 display.setMapping(dataDimension, visualvariableName);
     	 
 	     case 2: visualvariableName = "size";
@@ -161,22 +171,10 @@ public class MappingSelectionPanel extends JPanel{
 		
 		}
 		
-	}
-	
-	public void setSelectedDataDimension(int dimension){
-		
-		
-		
-		
+		//display.repaint();
 		
 	}
-	
-	
-   public void setSelectedVisualVariable(int visualVariableBox){
-		
-		
-		
-	}
+
 	
 	private class MyComboBoxModel extends AbstractListModel implements ComboBoxModel {
 

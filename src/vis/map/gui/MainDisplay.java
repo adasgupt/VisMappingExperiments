@@ -25,7 +25,16 @@ import vis.map.metrics.AxisPairMetrics;
 public class MainDisplay extends JPanel implements MouseListener, MouseMotionListener {
 
 
-     HashMap<Integer, String> visMap = new HashMap<Integer,String>();
+	// -1 denoted the not selected state
+	private int dimension1 = -1;
+	private int dimension2 = -1;
+	private int dimension3 = -1;
+	private int dimension4 = -1;
+	
+	
+	private static int PADDING = 40;
+
+     HashMap<String, Integer> visMap = null;
 	/*
 	 *  Parameters that control the computation of metrics-width, height of screen
 	 */
@@ -60,12 +69,7 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 	String drawingMode = "PC";
 	private int numDimensions;
 
-	/*
-	 * The axis pairs
-	 */
-	private int dimension1;
-	private int dimension2;
-	
+
 	public Axis axes[];
 
 	/** Helper class for string the properties of an axis. */
@@ -100,10 +104,12 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 	private ArrayList<Float> distanceEntropyList = new ArrayList<Float>();
 	private ArrayList<Float> jointEntropyList = new ArrayList<Float>();
 	private ArrayList<Float> pixelEntropyList = new ArrayList<Float>();
+	
 
 	public static final double LOG_BASE_2 = Math.log(2);
 
 	//	BufferedImage bufferImg = null ;
+	
 
 	public MainDisplay(){
 
@@ -111,6 +117,11 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 		addMouseMotionListener(this);
 	}
 
+	
+	public float getPadding(){
+		
+		return PADDING;
+	}
 
 	//	public void initBinning(int numBins) {
 	//
@@ -179,18 +190,19 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 
 		super.paint(g);
 		Graphics2D g2= (Graphics2D)g;
+        System.err.println("Painting");
 
-
-
-
-		System.err.println("Painting");
-
-
-
-		if(data!=null){
-
+        if(data!=null && visMap!=null){
+			
+			
 			System.err.println("Painting inside");
-			drawScatterplot(g2, data, 2, 3);
+			dimension1 = visMap.get("position1");
+			dimension2 = visMap.get("position2");
+			
+			dimension3 = visMap.get("size");
+			dimension4 = visMap.get("color");
+			
+			drawScatterplot(g2, data, dimension1, dimension2, dimension3, dimension4);
 
 			//processMetrics();
 
@@ -226,7 +238,7 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 	
 
 
-	private void drawScatterplot(Graphics g,DataSet data, int axis1, int axis2){
+	private void drawScatterplot(Graphics g,DataSet data, int axis1, int axis2, int axis3, int axis4){
 
 		//float axisOffset1 = parallelDisplay.getAxisOffset(axis1);
 		//float axisOffset2 = parallelDisplay.getAxisOffset(axis2);
@@ -241,11 +253,13 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 		int w = this.getWidth();
 
 		int h = this.getHeight();
+		
+		param = new Point2D.Float(w, h);
 
 		BufferedImage bufferImg = new BufferedImage(this.getWidth(), this.getHeight(),BufferedImage.TYPE_4BYTE_ABGR);
 		bufferImg = (BufferedImage)(this.createImage(w, h));
 
-
+        int radius = 4;
 
 		//setting up the BufferedImage properties
 		ig = bufferImg.createGraphics();
@@ -254,31 +268,49 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 
 		float scale1 = (data.getMaxValue(axis1) - data.getMinValue(axis1));
 		float scale2 = (data.getMaxValue(axis2) - data.getMinValue(axis2));
+		float scale3 = (data.getMaxValue(axis3) - data.getMinValue(axis3));
+		float scale4 = (data.getMaxValue(axis4) - data.getMinValue(axis4));
+		
+		
 		float axisOffset1 = data.getMinValue(axis1);
 		float axisOffset2 = data.getMinValue(axis2);
-
+		float axisOffset3 = data.getMinValue(axis3);
+		float axisOffset4 = data.getMinValue(axis4);
 	
 
 		ig.setColor(new Color(0,0,0));
-		ig.drawLine(0, 0, 0, (int)param.y);
-		ig.drawLine(0, (int)param.y, (int)param.x, (int)param.y);
+		ig.drawLine(PADDING, 0, PADDING, (int)param.y-PADDING);
+		ig.drawLine(PADDING, (int)param.y-PADDING, (int)param.x+PADDING, (int)param.y-PADDING);
+		
+		
+		System.err.println("Inside scatter");
 
 		/*
-		 * the loop for rendering all the lines in parallel coordinates
+		 * the loop for rendering all the points
 		 */
 		for(float[]dataRow : data){
 
-			int v1 = (int)((dataRow[axis1] - axisOffset1) * (param.x) / scale1);
-			int v2 = (int)((dataRow[axis2] - axisOffset2) * (param.y) / scale2);
+			int v1 = (int)((dataRow[axis1] - axisOffset1) * (param.x-PADDING) / scale1);
+			int v2 = (int)((dataRow[axis2] - axisOffset2) * (param.y-PADDING) / scale2);
+			int v3 = (int)((dataRow[axis3] - axisOffset3)*(param.y-PADDING) / scale3);
+		//	int v4 = (int)((dataRow[axis4] - axisOffset4) * (param.y) / scale2);
 			//			if(useColor)
 			//				ig.setColor(getRecordColor(v1,v2, (int)param.y));
 			//			else
-			ig.setColor(new Color(0,0,0));
+			ig.setColor(new Color(128,128,128, 120));
 
 			//ig.drawLine((int)(v1), (int)(param.y-v2), (int)(v1)+2,(int)(param.y-v2)+2);	
-			ig.drawOval((int)(v1), (int)(param.y-v2), 4, 4);
+			if(axis3!=-1)
+			 radius = (int)getScaledRadius(v3);
+		//	System.err.println("radius " +radius);
+			
+			//ig.drawOval((int)(v1), (int)(param.y-v2), radius, radius);
+			ig.fillOval((int)(PADDING+v1), (int)(param.y-PADDING-v2), radius, radius);
 		}
 
+		float je = data.getAxisPair(axis1, axis2, this).getJointEntropy((int)param.y-PADDING);
+		float se = data.getAxisPair(axis1, axis2, this).getSizeEntropy((int)param.y-PADDING, axis3);
+		
 		g2.drawImage(bufferImg, null, 0, 0);
 		imageList.add(bufferImg);
 
@@ -297,8 +329,21 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 	}
 
 	
-
+    private float getScaledRadius(int scaledValueForDimension) {
+    	
+    	
+    	float radius = (float)(Math.sqrt((scaledValueForDimension/Math.PI)));
+    	
+    	
+    //	System.err.println("  Scaled radius value  " + radius);
+    	
+    	return radius;
+    	
 		
+		
+	}
+
+
 	@Override
 	public void mouseDragged(MouseEvent evt) {
 		// TODO Auto-generated method stub
@@ -376,10 +421,14 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 	}
 
 
+	//Called in response to user selection of a mapping between data dimension and a visual variable
+	
 	public void setMapping(int dataDimension, String visualvariableName) {
 		
-		visMap.put(dataDimension, visualvariableName);
-		
+		if(visMap == null)
+			visMap = new HashMap<String, Integer>();
+		visMap.put(visualvariableName, dataDimension);
+		repaint();
     
 		
 	}

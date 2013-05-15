@@ -1,6 +1,7 @@
 package vis.map;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.io.IOException;
 
@@ -28,6 +29,7 @@ public class VisMain {
 		
 		JFrame mainFrame = new JFrame("Mapping Panel");
 		MainDisplay display = new MainDisplay();
+		display.setBackground(Color.white);
 		display.initialize(file);
 		mainFrame.setLayout(new BorderLayout());
 		mainFrame.add(display, BorderLayout.CENTER);
