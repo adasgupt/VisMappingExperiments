@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import vis.map.datamodel.STFFile;
 import vis.map.gui.MainDisplay;
 import vis.map.gui.MappingSelectionPanel;
+import vis.map.gui.MetaViewPanel;
 
 public class VisMain {
 	
@@ -38,7 +39,12 @@ public class VisMain {
 		mappingPanel.setPreferredSize(new Dimension(200,800));
 		mappingPanel.setParameters(file, display);
 		mappingPanel.createPanel();
+		
+		MetaViewPanel metaViewPanel = new MetaViewPanel();
+		metaViewPanel.setSize(new Dimension(800,100));
+	
 		mainFrame.add(mappingPanel, BorderLayout.WEST);
+		mainFrame.add(metaViewPanel, BorderLayout.SOUTH);
 
 
 		

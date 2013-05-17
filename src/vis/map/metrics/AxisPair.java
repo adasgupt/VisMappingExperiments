@@ -585,60 +585,7 @@ public final class AxisPair {
 
 	}
 
-	public float getSizeEntropy(int numBins, int sizeDimension){
 
-		//create histogram of sizes
-		int sizeHistogram[] = getSizeHistogram(numBins, sizeDimension);
-		
-		double numTotal = model.getNumRecords();
-		double probabilityValue = 0;
-		double logProbabilityValue = 0;
-		double entropy = 0;
-		float sumEntropy = 0;
-
-		for(int bin=0; bin<sizeHistogram.length; bin++)
-		{
-
-			probabilityValue = sizeHistogram[bin]/(float)numTotal;
-			
-	
-		    if (probabilityValue > 0)
-				logProbabilityValue = (Math.log(1/probabilityValue))/ LOG_BASE_2;
-			entropy = (probabilityValue * logProbabilityValue);
-			sumEntropy =(float)( sumEntropy + entropy);
-
-		}
-
-        System.err.println("Size Entropy +++++++++++ " +sumEntropy);
-		return sumEntropy;
-
-	}
-
-
-	private int[] getSizeHistogram(int numBins, int sizeDimension) {
-
-		int[] sizeHistogram = new int[(int)Math.PI*(numBins*numBins)];
-		float scale = (model.getMaxValue(sizeDimension) - model.getMinValue(sizeDimension));
-		float axisOffset = model.getMinValue(sizeDimension);
-		float binnedVal =0;
-		int radius = 0;
-
-		for(float dataRow[]: model)
-		{
-			binnedVal = ((dataRow[sizeDimension] - axisOffset)*(mainDisplay.getHeight()- mainDisplay.getPadding()) / scale);
-
-			radius = (int)(Math.sqrt((binnedVal/Math.PI)));
-			
-		
-
-			sizeHistogram[radius]++;
-
-
-
-		}
-
-		return sizeHistogram;
-	}
 
 	public float getJointEntropy(int numBins) {
 
@@ -1354,7 +1301,113 @@ public final class AxisPair {
 
 	}
 
+	public float getSizeEntropy(int numBins, int sizeDimension){
+
+		//create histogram of sizes
+		int sizeHistogram[] = getSizeHistogram(numBins, sizeDimension);
+
+		double numTotal = model.getNumRecords();
+		double probabilityValue = 0;
+		double logProbabilityValue = 0;
+		double entropy = 0;
+		float sumEntropy = 0;
+
+		for(int bin=0; bin<sizeHistogram.length; bin++)
+		{
+
+			probabilityValue = sizeHistogram[bin]/(float)numTotal;
 
 
+			if (probabilityValue > 0)
+				logProbabilityValue = (Math.log(1/probabilityValue))/ LOG_BASE_2;
+			entropy = (probabilityValue * logProbabilityValue);
+			sumEntropy =(float)( sumEntropy + entropy);
+
+		}
+
+		System.err.println("Size Entropy +++++++++++ " +sumEntropy);
+		return sumEntropy;
+
+	}
+
+
+	private int[] getSizeHistogram(int numBins, int sizeDimension) {
+
+		int[] sizeHistogram = new int[(int)Math.PI*(numBins*numBins)];
+		float scale = (model.getMaxValue(sizeDimension) - model.getMinValue(sizeDimension));
+		float axisOffset = model.getMinValue(sizeDimension);
+		float binnedVal =0;
+		int radius = 0;
+
+		for(float dataRow[]: model)
+		{
+			binnedVal = ((dataRow[sizeDimension] - axisOffset)*(mainDisplay.getHeight()- mainDisplay.getPadding()) / scale);
+
+			radius = (int)(Math.sqrt((binnedVal/Math.PI)));
+
+
+
+			sizeHistogram[radius]++;
+
+
+
+		}
+
+		return sizeHistogram;
+	}
+
+
+
+	public float getColorEntropy(int numBins, int colorDimension) {
+
+
+		int[] colorHistogram = getColorHistogram(numBins, colorDimension);
+
+		double numTotal = model.getNumRecords();
+		double probabilityValue = 0;
+		double logProbabilityValue = 0;
+		double entropy = 0;
+		float sumEntropy = 0;
+
+		for(int bin=0; bin<colorHistogram.length; bin++)
+		{
+
+			probabilityValue = colorHistogram[bin]/(float)numTotal;
+
+
+			if (probabilityValue > 0)
+				logProbabilityValue = (Math.log(1/probabilityValue))/ LOG_BASE_2;
+			entropy = (probabilityValue * logProbabilityValue);
+			sumEntropy =(float)( sumEntropy + entropy);
+
+		}
+
+		System.err.println("Color Entropy +++++++++++ " +sumEntropy);
+		return sumEntropy;
+
+	}
+
+
+
+	private int[] getColorHistogram(int numBins, int sizeDimension) {
+
+		int[] colorHistogram = new int[257];
+		float scale = (model.getMaxValue(sizeDimension) - model.getMinValue(sizeDimension));
+		float axisOffset = model.getMinValue(sizeDimension);
+		float binnedVal =0;
+		int val = 0;
+
+		for(float dataRow[]: model)
+		{
+			binnedVal = ((dataRow[sizeDimension] - axisOffset)*(mainDisplay.getHeight()- mainDisplay.getPadding()) / scale);
+
+			val = (int)((binnedVal/numBins)*256);
+			//System.err.println("Color val " +val);
+			colorHistogram[val]++;
+
+		}
+
+		return colorHistogram;
+	}
 
 }

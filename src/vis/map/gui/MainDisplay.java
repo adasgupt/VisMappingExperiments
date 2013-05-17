@@ -54,9 +54,12 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 
 	public static final float RECORD_COLOR_HIGH[] = {251/255f, 106/255f, 74/255f, .9f};
 
-	public static final float RECORD_COLOR_MID[] = {0.874509804f, 0.760784314f, 0.490196078f, .1f};
+	//public static final float RECORD_COLOR_MID[] = {0.874509804f, 0.760784314f, 0.490196078f, .1f};
 
-	public static final float RECORD_COLOR_LOW[] = {0, 0/255f, 1f, .6f};
+	public static final float RECORD_COLOR_LOW[] = {0, 0, 1, .6f};
+	
+	
+	public static final float RECORD_COLOR[] = {222, 45, 3, .6f};
 
 	//a hack to stop calling the paint code repeatedly
 	int callCount= 0;
@@ -226,10 +229,13 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 	protected Color getRecordColor(int point1, int numBins){
 
 		float norm = (float)((point1/(float)numBins));
-		float mult[] = {RECORD_COLOR_HIGH[0] * norm + RECORD_COLOR_LOW[0]*(1-norm), RECORD_COLOR_HIGH[1] * norm + RECORD_COLOR_LOW[1]*(1-norm), 
-				RECORD_COLOR_HIGH[2] * norm + RECORD_COLOR_LOW[2]*(1-norm), 0.6f};
+//		float mult[] = {RECORD_COLOR_HIGH[0] * norm + RECORD_COLOR_LOW[0]*(1-norm), RECORD_COLOR_HIGH[1] * norm + RECORD_COLOR_LOW[1]*(1-norm), 
+//				RECORD_COLOR_HIGH[2] * norm + RECORD_COLOR_LOW[2]*(1-norm), 0.6f};
 
-		Color color = new Color(mult[0], mult[1], mult[2], mult[3]);
+		float newMult[] = {RECORD_COLOR_LOW[0] * norm, RECORD_COLOR_LOW[1] * norm, RECORD_COLOR_LOW[2] * norm, RECORD_COLOR_LOW[3]};
+				
+	
+		Color color = new Color(newMult[0], newMult[1], newMult[2], newMult[3]);
 		
 	//	Color newColor = new Color(RECORD_COLOR_LOW[0], RECORD_COLOR_LOW[1], norm*RECORD_COLOR_LOW[2], RECORD_COLOR_LOW[3]);
 
@@ -307,7 +313,7 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 			
 			if(axis4!=-1)
 			{
-				System.err.println("setting color");
+				//System.err.println("setting color");
 				ig.setColor(getRecordColor(v4, (int)param.y-PADDING));
 				
 			}
@@ -319,6 +325,7 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 
 		float je = data.getAxisPair(axis1, axis2, this).getJointEntropy((int)param.y-PADDING);
 		float se = data.getAxisPair(axis1, axis2, this).getSizeEntropy((int)param.y-PADDING, axis3);
+		float ce = data.getAxisPair(axis1, axis2, this).getColorEntropy((int)param.y-PADDING, axis4);
 		
 		g2.drawImage(bufferImg, null, 0, 0);
 		imageList.add(bufferImg);
