@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 
 
 import vis.map.datamodel.DataSet;
-import vis.map.metrics.AxisPairMetrics;
+import vis.map.metrics.AxisQuartetMetrics;
 
 
 
@@ -47,7 +47,7 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 	FileWriter entropyOutput = null;
 	BufferedWriter bw = null;
 	
-    private ArrayList<AxisPairMetrics> metricsList = new ArrayList<AxisPairMetrics>();
+    private ArrayList<AxisQuartetMetrics> metricsList = new ArrayList<AxisQuartetMetrics>();
 
 	private ArrayList<BufferedImage> imageList = new ArrayList<BufferedImage>();
 
@@ -330,7 +330,7 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 		g2.drawImage(bufferImg, null, 0, 0);
 		imageList.add(bufferImg);
 
-		AxisPairMetrics metricObject = new AxisPairMetrics(axis1, axis2);
+		AxisQuartetMetrics metricObject = new AxisQuartetMetrics(axis1, axis2);
 
 		
 		//setUseColor(true);
@@ -412,7 +412,7 @@ public class MainDisplay extends JPanel implements MouseListener, MouseMotionLis
 
 	}
 
-	public ArrayList<AxisPairMetrics> getMetricsList(){
+	public ArrayList<AxisQuartetMetrics> getMetricsList(){
 
 		return metricsList;
 	}

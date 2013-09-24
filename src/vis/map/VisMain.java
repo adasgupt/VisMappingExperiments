@@ -5,19 +5,22 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.io.IOException;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import vis.map.datamodel.STFFile;
 import vis.map.gui.MainDisplay;
 import vis.map.gui.MappingSelectionPanel;
-import vis.map.gui.MetaViewPanel;
+import vis.map.gui.RankedViewPanel;
+import vis.map.gui.VisualTasks;
 
 public class VisMain {
 	
 	public static void main(String args[]){
 		
 //read Data
-		STFFile file = new STFFile("src/data/cloud.stf");
+		STFFile file = new STFFile("src/data/cars.stf");
 		try {
 			file.readContents();
 		} catch (IOException e) {
@@ -33,18 +36,27 @@ public class VisMain {
 		display.setBackground(Color.white);
 		display.initialize(file);
 		mainFrame.setLayout(new BorderLayout());
-		mainFrame.add(display, BorderLayout.CENTER);
+
+   
 		
 		MappingSelectionPanel mappingPanel = new MappingSelectionPanel();
 		mappingPanel.setPreferredSize(new Dimension(200,800));
 		mappingPanel.setParameters(file, display);
 		mappingPanel.createPanel();
 		
-		MetaViewPanel metaViewPanel = new MetaViewPanel();
+		VisualTasks tasks = new VisualTasks(file);
+		RankedViewPanel metaViewPanel = new RankedViewPanel(file, tasks);
 		metaViewPanel.setSize(new Dimension(800,100));
-	
+		tasks.initDisplay(metaViewPanel);
+		
+		JPanel centerPanel = new JPanel();
+		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+//		
+    mainFrame.add(centerPanel, BorderLayout.CENTER);
 		mainFrame.add(mappingPanel, BorderLayout.WEST);
-		mainFrame.add(metaViewPanel, BorderLayout.SOUTH);
+		
+		 centerPanel.add(display);
+		 centerPanel.add(metaViewPanel);
 
 
 		

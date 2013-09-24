@@ -1,4 +1,4 @@
-//package vis.map.datamodel;
+//
 //
 //import java.io.FileNotFoundException;
 //import java.io.FileReader;
@@ -6,12 +6,7 @@
 //
 //import au.com.bytecode.opencsv.CSVReader;
 //
-///**
-// * Reads a CSV file and sets up a DataSet Object.
-// *
-// * @author ADG.
-// *         Created May 5, 2013.
-// */
+//
 //public class DataReaderTODO {
 //
 //	DataSet data = null;

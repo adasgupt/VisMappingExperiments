@@ -8,11 +8,13 @@ import java.awt.image.BufferedImage;
  * @author ADG.
  *         Created May 11, 2013.
  */
-public class AxisPairMetrics implements Comparable, Cloneable{
+public class AxisQuartetMetrics implements Comparable, Cloneable{
 	
 	
         private int axis1;
 		private int axis2;
+		private int sizeDimension;
+		private int colorDimension;
 		private float jointEntropy;
 		private float grayEntropy;
 		private float colorEntropy;
@@ -22,8 +24,10 @@ public class AxisPairMetrics implements Comparable, Cloneable{
 		private float klDiv;
 
 		private BufferedImage img;
+		private float sizeEntropy;
+		private float degreeOfClustering;
 
-		public AxisPairMetrics(int dim1, int dim2){
+		public AxisQuartetMetrics(int dim1, int dim2){
 			axis1 = dim1;
 			axis2 = dim2;
 
@@ -109,11 +113,45 @@ public class AxisPairMetrics implements Comparable, Cloneable{
 
 		}
 
+		public void setSizeDimension(int dim){
+			
+			sizeDimension =dim;
+		}
+		
+		public int getSizeDimension(){
+			return sizeDimension;
+		}
 
+		public void setColorDimension(int dim){
+			
+			colorDimension = dim;
+		}
+		
+		public int getColorDimension(){
+			return colorDimension;
+		}
 		@Override
 		public int compareTo(Object arg0) {
 			// TODO Auto-generated method stub.
 			return 0;
+		}
+		public void setSizeEntropy(float sizeEntropy) {
+			this.sizeEntropy = sizeEntropy;
+			
+		}
+		
+		public float getSizeEntropy() {
+			return sizeEntropy;
+			
+		}
+		public void setClusterCoefficient(float degreeOfClustering) {
+			this.degreeOfClustering = degreeOfClustering;
+			
+		}
+		
+		public float getClusterCoefficient() {
+			return degreeOfClustering;
+			
 		}
 
 	}
